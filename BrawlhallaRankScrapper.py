@@ -92,6 +92,7 @@ def getRatingDataWithThreads(region="all", mode="1v1", batchAmount=50):
 
 
 def getMaximumPage(region="all", mode="1v1", lowerPage=0, upperPage=1000000):
+    validateInputs(region, mode)
 
     if upperPage - lowerPage <= 1:
         return lowerPage
