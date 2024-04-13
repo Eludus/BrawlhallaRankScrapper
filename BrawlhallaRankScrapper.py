@@ -5,6 +5,7 @@ import os
 import requests
 from bs4 import BeautifulSoup
 
+dataDirectory = "data"
 availableRegions = {
     "all",
     "us-e",
@@ -20,7 +21,22 @@ availableRegions = {
 availableModes = {"1v1", "2v2"}
 
 
-# Fetch the rating data of the specified region and mode using threading.
+# Get the Rating Data from json file
+def getCachedRatingData(region="all", mode="1v1"):
+    print("Getting Cached Rating Data from {} {}".format(region, mode))
+    validateInputs(region, mode)
+
+    ratingData = {}
+
+    with open(
+        os.path.join(dataDirectory, "{}_{}_RatingData.json".format(region, mode)), "r"
+    ) as json_file:
+        ratingData = json.load(json_file)
+
+    return ratingData
+
+
+# Fetch the Rating Data of the specified region and mode using threading.
 def fetchRatingData(region="all", mode="1v1", batchAmount=50):
     print("Fetching Rating Data from {} {}".format(region, mode))
     validateInputs(region, mode)
@@ -54,13 +70,12 @@ def fetchRatingData(region="all", mode="1v1", batchAmount=50):
     }
 
     # Create the directory if it doesn't exist
-    directory = "data"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+    if not os.path.exists(dataDirectory):
+        os.makedirs(dataDirectory)
 
     # Write the file
     with open(
-        os.path.join(directory, "{}_{}_RatingData.json".format(region, mode)), "w"
+        os.path.join(dataDirectory, "{}_{}_RatingData.json".format(region, mode)), "w"
     ) as json_file:
         json.dump(jsonData, json_file)
         print("Saved as data/{}_{}_RatingData.json".format(region, mode))
@@ -132,4 +147,5 @@ def updateAllRatingData(batchAmount=50):
 
 
 if __name__ == "__main__":
-    updateAllRatingData()
+    ratingData = getCachedRatingData(region="sea", mode="1v1")
+    print(ratingData["count"])
