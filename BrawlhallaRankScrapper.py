@@ -1,4 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
+import datetime
 import json
 import requests
 from bs4 import BeautifulSoup
@@ -56,8 +57,17 @@ def getRatingData(region="all", mode="1v1"):
         if pageNumber % 50 == 0:
             print(pageNumber)
 
-    print(len(allRatingData))
-    print(pageNumber)
+    jsonData = {
+        "date": datetime.now().date(),
+        "count": len(allRatingData),
+        "data": allRatingData,
+    }
+
+    with open("{}_{}_RatingData.json".format(region, mode), "w") as json_file:
+        json.dump(jsonData, json_file)
+        print("Saved as {}_{}_RatingData.json".format(region, mode))
+
+    return allRatingData
 
 
 def getRatingDataWithThreads(region="all", mode="1v1", batchAmount=50):
@@ -85,10 +95,18 @@ def getRatingDataWithThreads(region="all", mode="1v1", batchAmount=50):
             if len(allRatingData) % 1250 == 0:
                 print("Current Page: " + str(len(allRatingData) / 25))
 
+    jsonData = {
+        "date": datetime.now().date(),
+        "count": len(allRatingData),
+        "data": allRatingData,
+    }
+
     with open("{}_{}_RatingData.json".format(region, mode), "w") as json_file:
-        json.dump(allRatingData, json_file)
+        json.dump(jsonData, json_file)
+        print("Saved as {}_{}_RatingData.json".format(region, mode))
 
     print("Length: " + str(len(allRatingData)))
+    return allRatingData
 
 
 def getMaximumPage(region="all", mode="1v1", lowerPage=0, upperPage=1000000):
