@@ -1,8 +1,9 @@
 # Brawlhalla Ranking Page Scrapper
 This is a project to scrape through Brawlhalla's Ranking Page data and have the elo data plotted in a histogram.
+It allows for filtering of Elo Range, Region and Gamemode
 
 ## For people who just wants to view the data
-For the people that don't care how it works, I've packed the program into an EXE file in /dist for easy use. Just download the /dist folder, run the .exe and you're good to go.
+For the people that don't care how it works, I've packed the program into an EXE file in "/dist" folder for easy use. Just download the /dist folder, run the .exe and you're good to go (Probably).
 
 __After Running BrawlhallaRankPlotter.exe__
 1. Enter the Elo Range you want
@@ -28,4 +29,5 @@ It is a lot faster but the data is from the last time you've called the `fetchRa
 
 ## Help
 Let me know if there is a better / faster way if you know it. I may or may not do anymore update on it, but it will be a good learning experience.
+
 If you did go through the trouble and generate with the latest data, feel free to do a pull request and I'll update it if I see it, it might save others the trouble of doing it.
