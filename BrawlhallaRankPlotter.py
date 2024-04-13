@@ -139,9 +139,11 @@ def fetchDataWarning():
     button_frame = tk.Frame(content_frame)
     button_frame.pack(side=tk.BOTTOM, pady=(20, 0))
 
-    proceed_button = tk.Button(
-        button_frame, text="Proceed", command=BHRS.updateAllRatingData
-    )
+    def proceed():
+        BHRS.updateAllRatingData()
+        warning_window.destroy()
+
+    proceed_button = tk.Button(button_frame, text="Proceed", command=proceed)
     proceed_button.pack(side=tk.RIGHT, padx=5, pady=5)
 
     cancel_button = tk.Button(
