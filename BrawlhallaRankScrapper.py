@@ -4,7 +4,22 @@ import json
 import requests
 from bs4 import BeautifulSoup
 
+availableRegions = {
+    "all",
+    "us-e",
+    "eu",
+    "sea",
+    "brz",
+    "aus",
+    "us-w",
+    "jpn",
+    "sa",
+    "me",
+}
+availableModes = {"1v1", "2v2"}
 
+
+# Fetch the rating data of the specified region and mode using threading.
 def fetchRatingData(region="all", mode="1v1", batchAmount=50):
     validateInputs(region, mode)
 
@@ -44,20 +59,8 @@ def fetchRatingData(region="all", mode="1v1", batchAmount=50):
     return allRatingData
 
 
+# Validate if region and mode are valid
 def validateInputs(region, mode):
-    availableModes = {"1v1", "2v2"}
-    availableRegions = {
-        "all",
-        "us-e",
-        "eu",
-        "sea",
-        "brz",
-        "aus",
-        "us-w",
-        "jpn",
-        "sa",
-        "me",
-    }
 
     if mode not in availableModes:
         raise ValueError(
@@ -70,6 +73,7 @@ def validateInputs(region, mode):
         )
 
 
+# Get the last page that contains rating data
 def getMaximumPage(region="all", mode="1v1", lowerPage=0, upperPage=1000000):
     validateInputs(region, mode)
 
@@ -88,6 +92,7 @@ def getMaximumPage(region="all", mode="1v1", lowerPage=0, upperPage=1000000):
         return getMaximumPage(region, mode, lowerPage, mid)
 
 
+# Fetch the Rating Data of a specified region, mode and page range
 def fetchPageDataPageRange(region, mode, lowerPage, upperPage):
     rankData = []
     for pageNumber in range(lowerPage, upperPage + 1):
@@ -99,6 +104,7 @@ def fetchPageDataPageRange(region, mode, lowerPage, upperPage):
     return rankData
 
 
+# Fetch the Rating Data of a specific URL
 def fetchPageData(url):
     r = requests.get(url)
     soup = BeautifulSoup(r.content, "lxml")
@@ -106,6 +112,13 @@ def fetchPageData(url):
     htmlData = soup.select("td[data-id='seasonRating']")
     rankData = [td.getText(strip=True) for td in htmlData]
     return rankData
+
+
+# To update the data folder with all the updated JSON data
+def updateAllRatingData(batchAmount=50):
+    for region in availableRegions:
+        for mode in availableModes:
+            fetchPageData(region, mode, batchAmount)
 
 
 if __name__ == "__main__":
