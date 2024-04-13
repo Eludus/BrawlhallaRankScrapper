@@ -14,7 +14,7 @@ __After Running BrawlhallaRankPlotter.exe__
 **Warning** The "Fetch Latest Data" Button will scrape through the thousands of brawlhalla ranking page to get the latest data. It is VERY SLOW. And it will scrape through every region's 1v1 and 2v2 ranking data. I **DO NOT** recommend using it. Does it even work? Honestly, I don't know, I've never used it. 
 
 ## Getting Rank Data
-To get Rank Data, the `BrawlhallaRankScrapper.py` script contains two functions for it `fetchRatingData()` and `getCachedRatingData()`.
+To get Rank Data, the `BrawlhallaRankScrapper.py` API script contains two functions for it `fetchRatingData()` and `getCachedRatingData()`.
 
 ### fetchRatingData()
 FetchRatingData() accepts Region and Gamemode as parameters to scrape the data from and returns an array of elo from highest to lowest.
@@ -26,6 +26,10 @@ I've implemented threading to speed it up but its still disgustingly slow.
 ### getCachedRatingData()
 getCachedRatingData() accepts Region and Gamemode as parameters and just return the .json file's data as a dictionary.
 It is a lot faster but the data is from the last time you've called the `fetchRatingData()` function OR the `Fetch Latest Data` Button from the GUI.
+
+## Plotting Rank Data
+For plotting, `BrawlhallaRankScrapper.py` plot the elo data as a histogram using matplotlib. A disgusting GUI is also added to allow for filtering of Elo Range, Region and Gamemode.
+**Run this script if you want to use the program**
 
 ## Help
 Let me know if there is a better / faster way if you know it. I may or may not do anymore update on it, but it will be a good learning experience.
