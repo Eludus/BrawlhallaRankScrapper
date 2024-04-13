@@ -1,6 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 import json
+import os
 import requests
 from bs4 import BeautifulSoup
 
@@ -52,7 +53,15 @@ def fetchRatingData(region="all", mode="1v1", batchAmount=50):
         "data": allRatingData,
     }
 
-    with open("data/{}_{}_RatingData.json".format(region, mode), "w") as json_file:
+    # Create the directory if it doesn't exist
+    directory = "data"
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    # Write the file
+    with open(
+        os.path.join(directory, "{}_{}_RatingData.json".format(region, mode)), "w"
+    ) as json_file:
         json.dump(jsonData, json_file)
         print("Saved as data/{}_{}_RatingData.json".format(region, mode))
 
