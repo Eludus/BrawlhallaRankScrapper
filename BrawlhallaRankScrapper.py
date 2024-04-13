@@ -21,6 +21,7 @@ availableModes = {"1v1", "2v2"}
 
 # Fetch the rating data of the specified region and mode using threading.
 def fetchRatingData(region="all", mode="1v1", batchAmount=50):
+    print("Fetching Rating Data from {} {}".format(region, mode))
     validateInputs(region, mode)
 
     maxPage = getMaximumPage(region, mode)
@@ -118,8 +119,8 @@ def fetchPageData(url):
 def updateAllRatingData(batchAmount=50):
     for region in availableRegions:
         for mode in availableModes:
-            fetchPageData(region, mode, batchAmount)
+            fetchRatingData(region=region, mode=mode, batchAmount=batchAmount)
 
 
 if __name__ == "__main__":
-    fetchRatingData(region="us-e", mode="1v1", batchAmount=25)
+    updateAllRatingData()
