@@ -5,72 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def validateInputs(region, mode):
-    availableModes = {"1v1", "2v2"}
-    availableRegions = {
-        "all",
-        "us-e",
-        "eu",
-        "sea",
-        "brz",
-        "aus",
-        "us-w",
-        "jpn",
-        "sa",
-        "me",
-    }
-
-    if mode not in availableModes:
-        raise ValueError(
-            "Invalid Mode. Allowed modes are {}".format(", ".join(availableModes))
-        )
-
-    if region not in availableRegions:
-        raise ValueError(
-            "Invalid Region. Allowed regions are {}".format(", ".join(availableRegions))
-        )
-
-
-def getRatingData(region="all", mode="1v1"):
-    validateInputs(region, mode)
-
-    allRatingData = []
-
-    pageNumber = 1
-    isEnd = False
-
-    while not isEnd:
-        URL = "https://www.brawlhalla.com/rankings/game/{}/{}/{}?sortBy=rank".format(
-            region, mode, pageNumber
-        )
-        r = requests.get(URL)
-        soup = BeautifulSoup(r.content, "lxml")
-
-        htmlData = soup.select("td[data-id='seasonRating']")
-        rankData = [td.getText(strip=True) for td in htmlData]
-        isEnd = len(rankData) == 0
-
-        allRatingData.extend(rankData)
-
-        pageNumber += 1
-
-        if pageNumber % 50 == 0:
-            print(pageNumber)
-
-    jsonData = {
-        "date": datetime.now().date(),
-        "count": len(allRatingData),
-        "data": allRatingData,
-    }
-
-    with open("{}_{}_RatingData.json".format(region, mode), "w") as json_file:
-        json.dump(jsonData, json_file)
-        print("Saved as {}_{}_RatingData.json".format(region, mode))
-
-    return allRatingData
-
-
-def getRatingDataWithThreads(region="all", mode="1v1", batchAmount=50):
+def fetchRatingData(region="all", mode="1v1", batchAmount=50):
     validateInputs(region, mode)
 
     maxPage = getMaximumPage(region, mode)
@@ -107,6 +42,32 @@ def getRatingDataWithThreads(region="all", mode="1v1", batchAmount=50):
 
     print("Length: " + str(len(allRatingData)))
     return allRatingData
+
+
+def validateInputs(region, mode):
+    availableModes = {"1v1", "2v2"}
+    availableRegions = {
+        "all",
+        "us-e",
+        "eu",
+        "sea",
+        "brz",
+        "aus",
+        "us-w",
+        "jpn",
+        "sa",
+        "me",
+    }
+
+    if mode not in availableModes:
+        raise ValueError(
+            "Invalid Mode. Allowed modes are {}".format(", ".join(availableModes))
+        )
+
+    if region not in availableRegions:
+        raise ValueError(
+            "Invalid Region. Allowed regions are {}".format(", ".join(availableRegions))
+        )
 
 
 def getMaximumPage(region="all", mode="1v1", lowerPage=0, upperPage=1000000):
@@ -148,4 +109,4 @@ def fetchPageData(url):
 
 
 if __name__ == "__main__":
-    getRatingDataWithThreads(region="eu", mode="1v1", batchAmount=25)
+    fetchRatingData(region="us-e", mode="1v1", batchAmount=25)
