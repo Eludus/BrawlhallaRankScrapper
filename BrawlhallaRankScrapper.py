@@ -1,5 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
-import datetime
+from datetime import datetime
 import json
 import requests
 from bs4 import BeautifulSoup
@@ -82,7 +82,7 @@ def getRatingDataWithThreads(region="all", mode="1v1", batchAmount=50):
         futures = []
 
         for pageNumber in range(1, maxPage + 1, batchAmount):
-            upperPage = min(maxPage + 1, pageNumber + batchAmount - 1)
+            upperPage = min(maxPage, pageNumber + batchAmount - 1)
             futures.append(
                 executor.submit(
                     fetchPageDataPageRange, region, mode, pageNumber, upperPage
@@ -92,18 +92,18 @@ def getRatingDataWithThreads(region="all", mode="1v1", batchAmount=50):
         for future in futures:
             rankData = future.result()
             allRatingData.extend(rankData)
-            if len(allRatingData) % 1250 == 0:
+            if len(allRatingData) % (batchAmount * 25) == 0:
                 print("Current Page: " + str(len(allRatingData) / 25))
 
     jsonData = {
-        "date": datetime.now().date(),
+        "date": str(datetime.now().date()),
         "count": len(allRatingData),
         "data": allRatingData,
     }
 
-    with open("{}_{}_RatingData.json".format(region, mode), "w") as json_file:
+    with open("data/{}_{}_RatingData.json".format(region, mode), "w") as json_file:
         json.dump(jsonData, json_file)
-        print("Saved as {}_{}_RatingData.json".format(region, mode))
+        print("Saved as data/{}_{}_RatingData.json".format(region, mode))
 
     print("Length: " + str(len(allRatingData)))
     return allRatingData
@@ -148,4 +148,4 @@ def fetchPageData(url):
 
 
 if __name__ == "__main__":
-    getRatingDataWithThreads(batchAmount=200)
+    getRatingDataWithThreads(region="eu", mode="1v1", batchAmount=25)
